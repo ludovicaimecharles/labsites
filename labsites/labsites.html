@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LabSites: Simple sites, built fast, hosted free</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky: #EFF6FC;
+    --sky-deep: #DCEBF7;
+    --ink: #142B45;
+    --muted: #5C7691;
+    --blue: #2E7FD1;
+    --blue-deep: #0F3A63;
+    --orange: #FF6A2B;
+    --orange-soft: #FFE4D3;
+    --white: #FFFFFF;
+    --code-bg: #0F2A44;
+    --code-text: #CFE6FF;
+    --code-blue: #6EC1FF;
+    --code-orange: #FFB37A;
+    --code-green: #8FE3B0;
+    --radius: 16px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family:'Inter', sans-serif;
+    background: var(--sky);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,h2,h3,.logo{ font-family:'Space Grotesk', sans-serif; }
+  code, .mono{ font-family:'JetBrains Mono', monospace; }
+
+  a{ color:inherit; text-decoration:none; }
+  img{ max-width:100%; display:block; }
+
+  .container{ max-width: 1120px; margin:0 auto; padding: 0 24px; }
+
+  :focus-visible{ outline: 3px solid var(--orange); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position: sticky; top:0; z-index: 50;
+    background: rgba(239,246,252,0.9);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(15,58,99,0.08);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 24px; max-width:1120px; margin:0 auto;
+  }
+  .logo{
+    font-size:1.25rem; font-weight:700; color:var(--blue-deep);
+    display:flex; align-items:center; gap:2px;
+  }
+  .logo .brk{ font-family:'JetBrains Mono', monospace; color:var(--orange); font-weight:600; }
+  .nav-links{ display:flex; align-items:center; gap:30px; font-weight:600; font-size:0.92rem; color:var(--blue-deep); }
+  .nav-links a{ opacity:0.75; transition: opacity .15s; }
+  .nav-links a:hover{ opacity:1; }
+  .nav-links .ludo-link{ display:inline-flex; align-items:center; gap:4px; }
+  .nav-cta{
+    background: var(--orange); color:var(--white);
+    padding:10px 20px; border-radius:999px; font-weight:700; font-size:0.9rem;
+    box-shadow: 0 6px 16px rgba(255,106,43,0.35);
+    transition: transform .15s ease;
+  }
+  .nav-cta:hover{ transform: translateY(-2px); }
+  @media (max-width:820px){ .nav-links{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{ padding: 76px 24px 40px; }
+  .hero-inner{ max-width:1120px; margin:0 auto; text-align:center; }
+
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background: var(--white); border:1px solid var(--sky-deep);
+    padding:7px 16px; border-radius:999px;
+    font-family:'JetBrains Mono', monospace; font-size:0.78rem; font-weight:500;
+    color: var(--blue-deep); margin-bottom:26px;
+  }
+  .eyebrow .dot{ width:7px; height:7px; border-radius:50%; background:var(--orange); }
+
+  h1.headline{
+    font-size: clamp(2.2rem, 5.4vw, 3.6rem);
+    font-weight:700; line-height:1.1; color:var(--blue-deep);
+    max-width: 780px; margin: 0 auto;
+  }
+  h1.headline .accent{ color: var(--orange); }
+
+  .subcopy{
+    max-width: 560px; margin: 20px auto 0;
+    font-size:1.08rem; line-height:1.65; color: var(--muted);
+  }
+
+  .hero-ctas{ margin-top:32px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary, .btn-secondary{
+    padding:14px 26px; border-radius:999px; font-weight:700; font-size:0.98rem;
+    display:inline-flex; align-items:center; gap:8px; transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn-primary{ background:var(--orange); color:var(--white); box-shadow:0 8px 20px rgba(255,106,43,0.35); }
+  .btn-secondary{ background:var(--white); color:var(--blue-deep); border:2px solid var(--sky-deep); }
+  .btn-primary:hover, .btn-secondary:hover{ transform: translateY(-3px); }
+
+  /* ---------- CODE -> SITE PANEL ---------- */
+  .demo{
+    margin: 56px auto 0; max-width: 980px;
+    display:grid; grid-template-columns: 1fr auto 1fr; gap: 18px; align-items:center;
+  }
+  @media (max-width: 760px){
+    .demo{ grid-template-columns: 1fr; }
+    .demo .arrow{ transform: rotate(90deg); margin: 4px auto; }
+  }
+
+  .panel{
+    border-radius: var(--radius);
+    overflow:hidden;
+    box-shadow: 0 24px 50px rgba(15,43,69,0.16);
+    text-align:left;
+  }
+  .panel-bar{
+    display:flex; align-items:center; gap:7px;
+    padding: 10px 14px;
+  }
+  .panel-bar span{ width:10px; height:10px; border-radius:50%; display:inline-block; }
+
+  .code-panel{ background: var(--code-bg); }
+  .code-panel .panel-bar{ background: rgba(255,255,255,0.06); }
+  .code-panel .panel-bar span:nth-child(1){ background:#FF6B6B; }
+  .code-panel .panel-bar span:nth-child(2){ background:#FFC93C; }
+  .code-panel .panel-bar span:nth-child(3){ background:#6EE7A8; }
+  .code-body{
+    font-family:'JetBrains Mono', monospace; font-size:0.8rem; line-height:1.75;
+    color: var(--code-text); padding: 18px 20px 22px;
+  }
+  .code-body .tag{ color: var(--code-blue); }
+  .code-body .attr{ color: var(--code-orange); }
+  .code-body .str{ color: var(--code-green); }
+  .code-body .cursor{
+    display:inline-block; width:7px; height:14px; background: var(--code-orange);
+    vertical-align: -2px; animation: blink 1.1s step-end infinite;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  .arrow{
+    width:52px; height:52px; border-radius:50%;
+    background: var(--white); border: 2px dashed var(--orange);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono', monospace; font-size:0.68rem; font-weight:600;
+    color: var(--orange); text-align:center; line-height:1.15;
+  }
+
+  .browser-panel{ background: var(--white); border: 1px solid var(--sky-deep); }
+  .browser-panel .panel-bar{ background: var(--sky); justify-content:space-between; }
+  .browser-panel .panel-bar .dots{ display:flex; gap:7px; }
+  .browser-panel .panel-bar .dots span:nth-child(1){ background:#FF6B6B; }
+  .browser-panel .panel-bar .dots span:nth-child(2){ background:#FFC93C; }
+  .browser-panel .panel-bar .dots span:nth-child(3){ background:#6EE7A8; }
+  .browser-panel .url{
+    font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--muted);
+    background: var(--white); padding:4px 12px; border-radius:6px; border:1px solid var(--sky-deep);
+  }
+  .browser-body{ padding: 22px 20px 26px; }
+  .browser-body .mini-logo{ font-weight:700; color:var(--blue-deep); font-size:0.95rem; margin-bottom:14px; }
+  .browser-body .mini-hero{ font-size:1.15rem; font-weight:700; color:var(--blue-deep); line-height:1.3; margin-bottom:8px;}
+  .browser-body .mini-sub{ font-size:0.82rem; color:var(--muted); margin-bottom:16px; }
+  .browser-body .mini-btn{
+    display:inline-block; background:var(--orange); color:var(--white); font-size:0.78rem; font-weight:700;
+    padding:8px 16px; border-radius:999px;
+  }
+
+  /* ---------- SECTION SHARED ---------- */
+  section{ padding: 90px 24px; }
+  .section-head{ max-width:600px; margin: 0 auto 52px; text-align:center; }
+  .section-label{
+    font-family:'JetBrains Mono', monospace; color:var(--orange); font-weight:600;
+    font-size:0.8rem; letter-spacing:0.5px; margin-bottom:12px;
+  }
+  .section-head h2{ font-size: clamp(1.7rem, 3.6vw, 2.3rem); color:var(--blue-deep); line-height:1.25; }
+  .section-head p{ margin-top:14px; color:var(--muted); font-size:1.02rem; line-height:1.6; }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .steps{ max-width:1120px; margin:0 auto; display:grid; grid-template-columns: repeat(3,1fr); gap:24px; }
+  @media (max-width:820px){ .steps{ grid-template-columns:1fr; } }
+  .step{
+    background: var(--white); border-radius: var(--radius); padding: 30px 26px;
+    border: 1px solid var(--sky-deep); position:relative;
+  }
+  .step-num{
+    font-family:'JetBrains Mono', monospace; font-weight:600; font-size:0.85rem;
+    color: var(--orange); margin-bottom:16px; display:block;
+  }
+  .step h3{ font-size:1.12rem; color:var(--blue-deep); margin-bottom:10px; }
+  .step p{ font-size:0.94rem; color:var(--muted); line-height:1.6; }
+
+  /* ---------- WHAT WE BUILD ---------- */
+  .compare{
+    max-width:1120px; margin:0 auto; display:grid; grid-template-columns:1fr 1fr; gap:24px;
+  }
+  @media (max-width:820px){ .compare{ grid-template-columns:1fr; } }
+  .compare-card{ border-radius: var(--radius); padding:32px 30px; }
+  .compare-card.yes{ background: var(--white); border: 2px solid var(--orange-soft); }
+  .compare-card.no{ background: var(--blue-deep); color: var(--white); }
+  .compare-card h3{ font-size:1.15rem; margin-bottom:18px; }
+  .compare-card.yes h3{ color: var(--blue-deep); }
+  .compare-card.no h3{ color: var(--white); }
+  .compare-list{ list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .compare-list li{ display:flex; gap:10px; align-items:flex-start; font-size:0.95rem; line-height:1.5; }
+  .compare-card.yes .compare-list li{ color: var(--ink); }
+  .compare-card.no .compare-list li{ color: rgba(255,255,255,0.88); }
+  .mark{ font-family:'JetBrains Mono', monospace; font-weight:700; flex-shrink:0; }
+  .compare-card.yes .mark{ color: var(--orange); }
+  .compare-card.no .mark{ color: #6EC1FF; }
+  .compare-card .redirect{
+    margin-top:20px; font-size:0.88rem; padding-top:18px; border-top:1px solid rgba(255,255,255,0.18);
+  }
+  .compare-card .redirect a{ color:#8FD3FF; font-weight:700; text-decoration:underline; }
+
+  /* ---------- HOSTING ---------- */
+  .hosting-wrap{
+    max-width:1120px; margin:0 auto;
+    background: var(--white); border-radius: 24px; padding: 50px 44px;
+    border:1px solid var(--sky-deep);
+    display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center;
+  }
+  @media (max-width:820px){ .hosting-wrap{ grid-template-columns:1fr; padding:36px 26px; } }
+  .hosting-wrap h2{ font-size: clamp(1.5rem, 3vw, 2rem); color:var(--blue-deep); margin-bottom:16px; }
+  .hosting-wrap p{ color:var(--muted); line-height:1.65; margin-bottom:14px; }
+  .badge-row{ display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; }
+  .badge{
+    background: var(--orange-soft); color:#B34A17; font-weight:700; font-size:0.78rem;
+    padding:7px 14px; border-radius:999px; font-family:'JetBrains Mono', monospace;
+  }
+  .url-sample{
+    background: var(--sky); border-radius:14px; padding:22px;
+    font-family:'JetBrains Mono', monospace; font-size:0.85rem; color:var(--blue-deep);
+  }
+  .url-sample .line{ padding:6px 0; border-bottom:1px dashed var(--sky-deep); }
+  .url-sample .line:last-child{ border-bottom:none; }
+  .url-sample .path{ color: var(--orange); }
+
+  /* ---------- STARTER STYLES GALLERY ---------- */
+  .gallery{
+    max-width:1120px; margin:0 auto;
+    display:grid; grid-template-columns: repeat(4,1fr); gap:22px;
+  }
+  @media (max-width:900px){ .gallery{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:520px){ .gallery{ grid-template-columns: 1fr; } }
+
+  .gallery-card{
+    border-radius: var(--radius); overflow:hidden;
+    border:1px solid var(--sky-deep); background: var(--white);
+    box-shadow: 0 14px 30px rgba(15,43,69,0.08);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .gallery-card:hover{ transform: translateY(-5px); box-shadow: 0 20px 40px rgba(15,43,69,0.14); }
+
+  .gallery-bar{ display:flex; gap:6px; padding:9px 12px; background: var(--sky); }
+  .gallery-bar span{ width:8px; height:8px; border-radius:50%; }
+  .gallery-bar span:nth-child(1){ background:#FF6B6B; }
+  .gallery-bar span:nth-child(2){ background:#FFC93C; }
+  .gallery-bar span:nth-child(3){ background:#6EE7A8; }
+
+  .gallery-body{ padding: 20px 18px 22px; }
+  .g-logo{ font-weight:700; font-size:0.82rem; margin-bottom:12px; }
+  .g-hero{ font-size:1rem; font-weight:700; line-height:1.3; margin-bottom:10px; }
+  .g-row{ height:6px; border-radius:3px; margin-bottom:7px; opacity:0.5; }
+  .g-row.short{ width:55%; }
+  .g-btn{
+    display:inline-block; font-size:0.72rem; font-weight:700; color:var(--white);
+    padding:7px 14px; border-radius:999px; margin-top:6px;
+  }
+
+  .theme-service{ background: #F3F9FF; }
+  .theme-service .g-logo, .theme-service .g-hero{ color: var(--blue-deep); }
+  .theme-service .g-row{ background: var(--blue); }
+  .theme-service .g-btn{ background: var(--orange); }
+
+  .theme-food{ background: #FFF6EE; }
+  .theme-food .g-logo, .theme-food .g-hero{ color:#7A3B12; }
+  .theme-food .g-row{ background:#FF8A4C; }
+  .theme-food .g-btn{ background: var(--blue-deep); }
+
+  .theme-pro{ background:#F2F5F9; }
+  .theme-pro .g-logo, .theme-pro .g-hero{ color:#1F2E42; }
+  .theme-pro .g-row{ background:#5C7691; }
+  .theme-pro .g-btn{ background: var(--orange); }
+
+  .theme-community{ background:#EFF9F3; }
+  .theme-community .g-logo, .theme-community .g-hero{ color:#134A32; }
+  .theme-community .g-row{ background:#3FA56A; }
+  .theme-community .g-btn{ background: var(--blue-deep); }
+
+  .gallery-label{
+    font-family:'JetBrains Mono', monospace; font-size:0.72rem; color:var(--muted);
+    padding: 0 18px 16px; display:block;
+  }
+
+  /* ---------- PRICING ---------- */
+  .pricing-grid{
+    max-width: 900px; margin: 0 auto; display:grid; grid-template-columns: 1fr 1fr; gap: 26px;
+  }
+  @media (max-width: 760px){ .pricing-grid{ grid-template-columns: 1fr; } }
+
+  .price-card{
+    background: var(--white); border-radius: 24px; padding: 38px 34px;
+    border: 2px solid var(--sky-deep); position: relative;
+  }
+  .price-card.featured-tier{
+    border-color: var(--orange); box-shadow: 0 20px 44px rgba(255,106,43,0.14);
+  }
+  .price-card-badge{
+    position:absolute; top:-13px; left:34px;
+    background: var(--orange); color:var(--white); font-weight:700; font-size:0.72rem;
+    padding:5px 14px; border-radius:999px; font-family:'JetBrains Mono', monospace;
+  }
+  .price-card-name{ font-family:'Space Grotesk', sans-serif; font-weight:700; font-size:1.2rem; color:var(--blue-deep); }
+  .price-card-tag{ font-size:0.85rem; color:var(--muted); margin-top:4px; margin-bottom:20px; }
+  .price-card-amount{
+    font-family:'Space Grotesk', sans-serif; font-weight:700; color:var(--blue-deep);
+    font-size: 2.2rem; margin-bottom:22px;
+  }
+  .price-card-amount span{ font-size:0.95rem; color:var(--muted); font-weight:600; }
+
+  .price-list{ list-style:none; display:flex; flex-direction:column; gap:11px; margin-bottom:26px; }
+  .price-list li{ font-size:0.9rem; color:var(--ink); display:flex; gap:9px; align-items:flex-start; }
+  .price-list .mark{ color:var(--orange); font-family:'JetBrains Mono', monospace; font-weight:700; flex-shrink:0; }
+
+  .price-cta{ width:100%; justify-content:center; }
+
+  .pricing-footnote{ max-width: 620px; margin: 40px auto 0; text-align:center; }
+  .price-note{ font-size:0.82rem; color:var(--muted); margin-top:8px; }
+  .faq-line{
+    margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--sky-deep);
+    text-align:left;
+  }
+  .faq-line .faq-q{ display:block; font-weight:700; color:var(--blue-deep); font-size:0.92rem; margin-bottom:6px; }
+  .faq-line .faq-a{ display:block; font-size:0.88rem; color:var(--muted); line-height:1.55; }
+
+
+  /* ---------- CTA BAND ---------- */
+  .cta-band{
+    max-width:1120px; margin:0 auto; text-align:center;
+    background: var(--white); border-radius:24px; padding:56px 30px;
+    border:2px dashed var(--sky-deep);
+  }
+  .cta-band h2{ font-size: clamp(1.6rem,3.4vw,2.1rem); color:var(--blue-deep); margin-bottom:14px; }
+  .cta-band p{ color:var(--muted); max-width:460px; margin:0 auto 28px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ background: var(--blue-deep); color: rgba(255,255,255,0.78); padding: 50px 24px 30px; }
+  .footer-inner{ max-width:1120px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:30px; }
+  .footer-brand .logo{ color: var(--white); margin-bottom:12px; }
+  .footer-brand p{ font-size:0.88rem; max-width:280px; line-height:1.6; color: rgba(255,255,255,0.6); margin-bottom:16px; }
+  .ludo-badge{ display:inline-flex; align-items:center; gap:10px; opacity:0.85; transition:opacity .15s; }
+  .ludo-badge:hover{ opacity:1; }
+  .ludo-badge img{ height:28px; width:auto; }
+  .ludo-badge span{ font-size:0.82rem; font-weight:600; color: rgba(255,255,255,0.85); }
+  .footer-links{ display:flex; gap:60px; flex-wrap:wrap; }
+  .footer-col h4{ font-size:0.8rem; text-transform:uppercase; letter-spacing:0.6px; color:#8FD3FF; margin-bottom:14px; font-family:'JetBrains Mono', monospace;}
+  .footer-col a{ display:block; font-size:0.9rem; color: rgba(255,255,255,0.78); margin-bottom:10px; }
+  .footer-col a:hover{ color:var(--white); }
+  .footer-bottom{
+    max-width:1120px; margin: 40px auto 0; padding-top:24px; border-top:1px solid rgba(255,255,255,0.12);
+    font-size:0.82rem; color: rgba(255,255,255,0.55);
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav">
+    <div class="logo"><span class="brk">&lt;</span>LabSites<span class="brk">/&gt;</span></div>
+    <div class="nav-links">
+      <a href="#build">What we build</a>
+      <a href="#how">How it works</a>
+      <a href="#hosting">Hosting</a>
+      <a href="#pricing">Pricing</a>
+      <a class="ludo-link" href="https://ludolabs.llc">Ludo Labs ↗</a>
+    </div>
+    <a class="nav-cta" href="#contact">Start a project</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="dot"></span> AI-drafted · GitHub-hosted · always simple</div>
+    <h1 class="headline">Simple sites. Built fast. <span class="accent">Hosted free.</span></h1>
+    <p class="subcopy">LabSites turns what your business needs into a clean, working website, drafted with AI and refined by hand, then hosted at no cost on GitHub Pages. No bloated builders, no monthly hosting bill.</p>
+    <div class="hero-ctas">
+      <a class="btn-primary" href="#contact">Start a project →</a>
+      <a class="btn-secondary" href="#how">See how it works</a>
+    </div>
+
+    <div class="demo">
+      <div class="panel code-panel">
+        <div class="panel-bar"><span></span><span></span><span></span></div>
+        <div class="code-body">
+&lt;<span class="tag">section</span> <span class="attr">class</span>=<span class="str">"hero"</span>&gt;<br>
+&nbsp;&nbsp;&lt;<span class="tag">h1</span>&gt;Your Company&lt;/<span class="tag">h1</span>&gt;<br>
+&nbsp;&nbsp;&lt;<span class="tag">p</span>&gt;What you do,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;made clear&lt;/<span class="tag">p</span>&gt;<br>
+&nbsp;&nbsp;&lt;<span class="tag">a</span> <span class="attr">class</span>=<span class="str">"btn"</span>&gt;Get a quote&lt;/<span class="tag">a</span>&gt;<br>
+&lt;/<span class="tag">section</span>&gt;<span class="cursor"></span>
+        </div>
+      </div>
+
+      <div class="arrow">AI<br>BUILD</div>
+
+      <div class="panel browser-panel">
+        <div class="panel-bar">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <div class="url">yourcompany.labsites.net</div>
+        </div>
+        <div class="browser-body">
+          <div class="mini-logo">Your Company</div>
+          <div class="mini-hero">What you do.<br>Made clear.</div>
+          <div class="mini-sub">A short line about your business, right up front.</div>
+          <div class="mini-btn">Get a quote</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="section-head">
+    <div class="section-label">// how it works</div>
+    <h2>From a conversation to a live URL</h2>
+    <p>Three steps, no dashboards to learn.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <span class="step-num">01</span>
+      <h3>Tell us what the site needs to do</h3>
+      <p>Your services, your contact info, your colors. A short back-and-forth is usually all it takes.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <h3>AI drafts the page, we refine it</h3>
+      <p>A clean, working HTML site is generated and hand-checked for anything that matters: contact details, spelling, layout.</p>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <h3>It goes live, free</h3>
+      <p>Hosted on GitHub Pages at no cost, on a <code class="mono">yourname.labsites.net</code> address, or your own domain if you have one.</p>
+    </div>
+  </div>
+</section>
+
+<section id="build">
+  <div class="section-head">
+    <div class="section-label">// scope, honestly</div>
+    <h2>What we build, and what we don't</h2>
+    <p>LabSites stays intentionally simple. For anything bigger, that's a different team.</p>
+  </div>
+  <div class="compare">
+    <div class="compare-card yes">
+      <h3>We build this</h3>
+      <ul class="compare-list">
+        <li><span class="mark">✓</span> Business &amp; service pages</li>
+        <li><span class="mark">✓</span> Portfolios &amp; landing pages</li>
+        <li><span class="mark">✓</span> Menus, service lists, contact info</li>
+        <li><span class="mark">✓</span> Simple, fast, easy to update</li>
+      </ul>
+    </div>
+    <div class="compare-card no">
+      <h3>We don't build this</h3>
+      <ul class="compare-list">
+        <li><span class="mark">×</span> Online stores &amp; payments</li>
+        <li><span class="mark">×</span> Logins, dashboards, databases</li>
+        <li><span class="mark">×</span> Mobile apps</li>
+        <li><span class="mark">×</span> Custom AI-powered products</li>
+      </ul>
+      <div class="redirect">Need one of these? <a href="https://ludolabs.llc">Ludo Labs ↗</a> builds complex, AI-driven web and mobile applications.</div>
+    </div>
+  </div>
+</section>
+
+<section id="hosting">
+  <div class="hosting-wrap">
+    <div>
+      <h2>Free hosting, no catch</h2>
+      <p>Every LabSites project can be hosted at zero cost on GitHub Pages. No monthly fees, no surprise renewals.</p>
+      <p>Prefer your own domain? We'll point it at your site instead. Either way, you own the code.</p>
+      <div class="badge-row">
+        <span class="badge">$0 / month</span>
+        <span class="badge">HTTPS included</span>
+        <span class="badge">You own the code</span>
+      </div>
+    </div>
+    <div class="url-sample">
+      <div class="line">yourcompany<span class="path">.labsites.net</span></div>
+      <div class="line">yourbusiness<span class="path">.labsites.net</span></div>
+      <div class="line">or → <span class="path">www.yourdomain.com</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="section-head">
+    <div class="section-label">// pricing</div>
+    <h2>Two ways to start</h2>
+    <p>Pick the tier that matches how much your site needs to say.</p>
+  </div>
+
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-card-name">Essentials</div>
+      <div class="price-card-tag">One page, done right</div>
+      <div class="price-card-amount">$499 <span>one-time</span></div>
+      <ul class="price-list">
+        <li><span class="mark">✓</span> A single, complete page</li>
+        <li><span class="mark">✓</span> Hosted free on GitHub Pages, HTTPS included</li>
+        <li><span class="mark">✓</span> Your own <code class="mono">yourname.labsites.net</code> address</li>
+        <li><span class="mark">✓</span> Simple contact button (call / email)</li>
+        <li><span class="mark">✓</span> 3 years of hosting included</li>
+        <li><span class="mark">✓</span> One round of revisions before launch</li>
+      </ul>
+      <a class="btn-secondary price-cta" href="mailto:labsites@ludolabs.llc">Start Essentials →</a>
+    </div>
+
+    <div class="price-card featured-tier">
+      <div class="price-card-badge">More content</div>
+      <div class="price-card-name">Plus</div>
+      <div class="price-card-tag">Multiple sections, more to say</div>
+      <div class="price-card-amount">$799 <span>one-time</span></div>
+      <ul class="price-list">
+        <li><span class="mark">✓</span> Multiple sections or pages</li>
+        <li><span class="mark">✓</span> Hosted free on GitHub Pages, HTTPS included</li>
+        <li><span class="mark">✓</span> Your own <code class="mono">yourname.labsites.net</code> address</li>
+        <li><span class="mark">✓</span> Working contact form</li>
+        <li><span class="mark">✓</span> 3 years of hosting included</li>
+        <li><span class="mark">✓</span> One round of revisions before launch</li>
+      </ul>
+      <a class="btn-primary price-cta" href="mailto:labsites@ludolabs.llc">Start Plus →</a>
+    </div>
+  </div>
+
+  <div class="pricing-footnote">
+    <p class="price-note">Custom domain, extra pages, or ongoing edits after launch are quoted separately.</p>
+    <p class="price-note" style="margin-top:6px;">No monthly builder subscription creeping upward. Pay once, own the site.</p>
+
+    <div class="faq-line">
+      <span class="faq-q">Why not a DIY builder?</span>
+      <span class="faq-a">You can, but you'll be designing, writing, and paying monthly indefinitely. We hand you a finished site once.</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div class="section-label">// starter looks</div>
+    <h2>A few directions your site could take</h2>
+    <p>Same fast, simple foundation, styled to fit what you do.</p>
+  </div>
+  <div class="gallery">
+    <div class="gallery-card">
+      <div class="gallery-bar"><span></span><span></span><span></span></div>
+      <div class="gallery-body theme-service">
+        <div class="g-logo">Your Company</div>
+        <div class="g-hero">Service you can<br>count on.</div>
+        <div class="g-row"></div>
+        <div class="g-row short"></div>
+        <div class="g-btn">Get a quote</div>
+      </div>
+      <div class="gallery-label">Service business</div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-bar"><span></span><span></span><span></span></div>
+      <div class="gallery-body theme-food">
+        <div class="g-logo">Your Restaurant</div>
+        <div class="g-hero">Fresh, local,<br>made daily.</div>
+        <div class="g-row"></div>
+        <div class="g-row short"></div>
+        <div class="g-btn">View menu</div>
+      </div>
+      <div class="gallery-label">Restaurant / menu</div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-bar"><span></span><span></span><span></span></div>
+      <div class="gallery-body theme-pro">
+        <div class="g-logo">Your Practice</div>
+        <div class="g-hero">Expertise you<br>can trust.</div>
+        <div class="g-row"></div>
+        <div class="g-row short"></div>
+        <div class="g-btn">Book a call</div>
+      </div>
+      <div class="gallery-label">Consultant / practice</div>
+    </div>
+
+    <div class="gallery-card">
+      <div class="gallery-bar"><span></span><span></span><span></span></div>
+      <div class="gallery-body theme-community">
+        <div class="g-logo">Your Community</div>
+        <div class="g-hero">Everything in<br>one place.</div>
+        <div class="g-row"></div>
+        <div class="g-row short"></div>
+        <div class="g-btn">Get in touch</div>
+      </div>
+      <div class="gallery-label">Community / org</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="cta-band">
+    <h2>Have a business that needs a simple site?</h2>
+    <p>Tell us what you do. We'll draft it, host it, and have it live in days, not weeks.</p>
+    <a class="btn-primary" href="mailto:labsites@ludolabs.llc">Start a project →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="logo"><span class="brk">&lt;</span>LabSites<span class="brk">/&gt;</span></div>
+      <p>Simple, AI-drafted websites with free GitHub-based hosting.</p>
+      <a href="https://ludolabs.llc" class="ludo-badge">
+        <img src="assets/ludolabs-logo.png" alt="Ludo Labs LLC">
+        <span>Part of the Ludo Labs family ↗</span>
+      </a>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>Site</h4>
+        <a href="#build">What we build</a>
+        <a href="#how">How it works</a>
+        <a href="#hosting">Hosting</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="https://ludolabs.llc">Ludo Labs LLC ↗</a>
+        <a href="mailto:labsites@ludolabs.llc">labsites@ludolabs.llc</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 LabSites, a Ludo Labs LLC project</span>
+    <span>Florida, USA</span>
+  </div>
+</footer>
+
+</body>
+</html>
